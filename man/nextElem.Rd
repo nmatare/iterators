@@ -1,6 +1,7 @@
 \name{nextElem}
 \alias{nextElem}
 \alias{nextElem.containeriter}
+\alias{nextElem.pythoniter}
 \alias{nextElem.funiter}
 \title{Get Next Element of Iterator}
 \description{
@@ -12,9 +13,9 @@
 }
 \usage{
 nextElem(obj, \dots)
-
 \method{nextElem}{containeriter}(obj, \dots)
 \method{nextElem}{funiter}(obj, \dots)
+\method{nextElem}{pythoniter}(obj, \dots)
 }
 \arguments{
   \item{obj}{an iterator object.}

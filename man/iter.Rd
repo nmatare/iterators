@@ -4,6 +4,7 @@
 \alias{iter.iter}
 \alias{iter.matrix}
 \alias{iter.data.frame}
+\alias{iter.python.builtin.iterator}
 \alias{iter.function}
 \title{Iterator Factory Functions}
 \description{
@@ -18,6 +19,8 @@ iter(obj, \dots)
 \method{iter}{matrix}(obj, by=c('column', 'cell', 'row'), chunksize=1L,
 checkFunc=function(...) TRUE, recycle=FALSE, \dots)
 \method{iter}{data.frame}(obj, by=c('column', 'row'),
+checkFunc=function(...) TRUE, recycle=FALSE, \dots)
+\method{iter}{python.builtin.iterator}(obj, by=function(...) (...),
 checkFunc=function(...) TRUE, recycle=FALSE, \dots)
 \method{iter}{function}(obj, checkFunc=function(...) TRUE,
 recycle=FALSE, \dots)

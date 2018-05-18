@@ -80,6 +80,18 @@ iter.function <- function(obj, checkFunc=function(...) TRUE,
   it
 }
 
+# allow a reticulate::python.builtin.itertor to become an iterator
+iter.python.builtin.iterator <- function(obj, recycle=FALSE, by=function(...) (...), checkFunc=function(...) TRUE, ...){
+    if(recycle)
+        stop("Cannot set recycle to TRUE for class 'python.builtin.itertor'")
+    state <- new.env()
+    state$i <- 0L
+    state$obj <- obj
+    it <- list(state=state, recycle=recycle, checkFunc=checkFunc, by=by)
+    class(it) <- c("pythoniter", "iter")
+    return(it)
+}
+
 getIterVal <- function(obj, plus, ...) {
   UseMethod('getIterVal')
 }
@@ -111,6 +123,19 @@ getIterVal.dataframeiter <- function(obj, plus=0L, check=TRUE, ...) {
   switch(obj$by,
          column=obj$state$obj[, i],
          obj$state$obj[i, ])
+}
+
+getIterVal.pythoniter <- function(obj, plus=1L, completed=NULL...){
+  value <- tryCatch({
+    obj$state$obj$`next`()
+  }, error=function(e) 
+    if(grepl("StopIteration", e$message))
+      completed
+    else
+      stop(e$message, call.=FALSE)
+  )
+  obj$state$i <- obj$state$i+plus
+  return(value)
 }
 
 nextElem <- function(obj, ...) {
@@ -239,6 +264,17 @@ nextElem.funiter <- function(obj, ...) {
     })
   }
 }
+
+nextElem.pythoniter <- function(obj, ...){
+    repeat {
+        val <- obj$by(getIterVal.pythoniter(obj, 1L))
+        if(obj$checkFunc(val))
+            return(val)
+        else 
+            return() # pass
+    }
+}
+
 
 nextElem.abstractiter <- function(obj, ...) {
   obj$nextElem()
