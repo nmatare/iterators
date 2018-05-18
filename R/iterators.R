@@ -125,12 +125,12 @@ getIterVal.dataframeiter <- function(obj, plus=0L, check=TRUE, ...) {
          obj$state$obj[i, ])
 }
 
-getIterVal.pythoniter <- function(obj, plus=1L, completed=NULL...){
+getIterVal.pythoniter <- function(obj, plus=1L, ...){
   value <- tryCatch({
     obj$state$obj$`next`()
   }, error=function(e) 
     if(grepl("StopIteration", e$message))
-      completed
+      NULL
     else
       stop(e$message, call.=FALSE)
   )
@@ -267,11 +267,11 @@ nextElem.funiter <- function(obj, ...) {
 
 nextElem.pythoniter <- function(obj, ...){
     repeat {
-        val <- obj$by(getIterVal.pythoniter(obj, 1L))
-        if(obj$checkFunc(val))
-            return(val)
-        else 
-            return() # pass
+        value <- obj$by(getIterVal(obj, 1L))
+        if(is.null(value))
+          return(value)
+        else (obj$checkFunc(value))
+            return(value)
     }
 }
 
